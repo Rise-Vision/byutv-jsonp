@@ -1,5 +1,6 @@
 ﻿suite("<byutv-jsonp>/Byutv.behaviors.Jsonp", function () {
-	var url = "http://jsonplaceholder.typicode.com/posts";
+	var url = "http://jsonplaceholder.typicode.com/posts",
+		riseCacheUrl = "https://localhost:9495/financials/?url=";
 
 	test("The factory/constructor `Byutv.Jsonp` exists.", function () {
 		assert.isDefined(Byutv.Jsonp);
@@ -529,6 +530,28 @@
 		assert.throws(function () {
 			jsonp.generateRequest();
 		}, Error, "`url` must be declared or set in order to perform a request.");
+	});
+
+  test("The `riseCacheUrl` property can be set.", function () {
+    var jsonp = new Byutv.Jsonp();
+
+    jsonp.setAttribute("rise-cache-url", riseCacheUrl);
+
+    assert.isString(jsonp.riseCacheUrl);
+    assert.propertyVal(jsonp, "riseCacheUrl", riseCacheUrl);
+    assert.isTrue(jsonp.hasAttribute("rise-cache-url"));
+  });
+
+  test("The `riseCacheUrl` property is used to prefix and encode the url.", function () {
+    var jsonp = new Byutv.Jsonp();
+    jsonp.setAttribute("url", url);
+    jsonp.setAttribute("auto", "");
+    jsonp.setAttribute("cache", "");
+    jsonp.setAttribute("rise-cache-url", riseCacheUrl);
+    jsonp.addEventListener("sent", function (event) {
+      assert.strictEqual(event.detail.options.url, riseCacheUrl + encodeURIComponent(url));
+      done();
+    });
 	});
 
 	test("The `verbose` property can be set.", function () {

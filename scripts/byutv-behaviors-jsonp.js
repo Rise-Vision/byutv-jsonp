@@ -241,6 +241,14 @@ Byutv.behaviors.Jsonp = {
 			value: ""
 		},
 
+    /**
+		 * The Rise Cache endpoint to facilitate the URL target of the request
+     */
+    riseCacheUrl: {
+      type: String,
+      value: ""
+    },
+
 		/**
 		 * If `true`, error messages will automatically be logged to the console.
 		 */
@@ -294,9 +302,10 @@ Byutv.behaviors.Jsonp = {
 	 * @return {String} _requestUrl The url and query string used in a request.
 	 */
 	get _requestUrl() {
-		var queryString = this._queryString;
+		var queryString = this._queryString,
+			requestUrl = queryString ? this.url + "?" + queryString : this.url;
 
-		return queryString ? this.url + "?" + queryString : this.url;
+		return this.riseCacheUrl ? this.riseCacheUrl + encodeURIComponent( requestUrl ) : requestUrl;
 	},
 
 	/**
