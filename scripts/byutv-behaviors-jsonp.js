@@ -105,7 +105,7 @@ Byutv.behaviors.Jsonp = {
 		/**
 		 * Specifies the JSONP wrapper function name and is the `callback-value` in the "{callback-key}={callback-value}" pair.
 		 *
-		 * Note: 
+		 * Note:
 		 * - The server will use this value to properly wrap JSONP request responses.
 		 * Change this to a static value when browser caching is desired (see `cache`).
 		 *
@@ -361,6 +361,7 @@ Byutv.behaviors.Jsonp = {
 		request.script = document.createElement("script");
 		request.script.src = this._requestUrl;
 		request.script.async = this.sync ? false : true;
+		request.script.id = "requestScript";
 
 		var _this = this;
 		request.script.onload = function (event) {
@@ -379,8 +380,9 @@ Byutv.behaviors.Jsonp = {
 			_this._handleResponse(request, data);
 		};
 
-		document.querySelector("head").appendChild(request.script);
-
+		if(!document.getElementById("requestScript")){
+			document.querySelector("head").appendChild(request.script);
+		}
 		request.timeout = setTimeout(function () {
 			_this._handleError(request, new ErrorEvent("error", {
 				error: new Error("Timeout"),
@@ -426,7 +428,7 @@ Byutv.behaviors.Jsonp = {
 
 	/**
 	 * A method to cleanup a request.
-	 * 
+	 *
 	 * @param {Request} request The request to cleanup.
 	 */
 	_cleanupRequest: function (request) {
@@ -446,7 +448,10 @@ Byutv.behaviors.Jsonp = {
 			this.activeRequests.splice(requestIndex, 1);
 			delete window[this.callbackValue];
 			clearTimeout(request.timeout);
-			request.script.parentNode.removeChild(request.script);
+
+			if(request.script.parentNode){
+				request.script.parentNode.removeChild(request.script);
+			}
 			request = null;
 		}
 	},
