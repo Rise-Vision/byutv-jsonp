@@ -448,7 +448,10 @@ Byutv.behaviors.Jsonp = {
 			this.activeRequests.splice(requestIndex, 1);
 			delete window[this.callbackValue];
 			clearTimeout(request.timeout);
-			request.script.parentNode.removeChild(request.script);
+
+			if(request.script.parentNode){
+				request.script.parentNode.removeChild(request.script);
+			}
 			request = null;
 		}
 	},
