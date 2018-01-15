@@ -361,7 +361,7 @@ Byutv.behaviors.Jsonp = {
 		request.script = document.createElement("script");
 		request.script.src = this._requestUrl;
 		request.script.async = this.sync ? false : true;
-		request.script.id = "requestScript";
+		request.script.id = "requestScript" + Math.random().toString().substring(2);
 
 		var _this = this;
 		request.script.onload = function (event) {
